@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  avatar    String?
+  isActive  Boolean  @default(true)
+  blogs     Blog[]
+  likes     Like[]
+  createdAt DateTime @default(now())
+  user_type String @default("User")
+  fullName String
+  userName String 
+}
+
+model Blog {
+  id                Int       @id @default(autoincrement())
+  blog_title        String
+  slug              String    @unique
+  thumbnail_image   String?
+  content           String
+  tags              String?
+  short_description String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  likes             Like[]
+  categoryId        Int?
+  category          Category? @relation(fields: [categoryId], references: [id])
+  user              User      @relation(fields: [userId], references: [id])
+  userId            Int
+  comments          Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  blogId    Int
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id       Int     @id @default(autoincrement())
+  title    String
+  isActive Boolean @default(true)
+  blogs    Blog[]
+}
+
+model Like {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  blogId Int
+  user   User @relation(fields: [userId], references: [id])
+  blog   Blog @relation(fields: [blogId], references: [id])
+
+  @@unique([userId, blogId])
+}

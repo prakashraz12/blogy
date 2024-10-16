@@ -12,19 +12,6 @@ import { CategoryModule } from './category/category.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRootAsync({
-      imports:[ConfigModule],
-      inject:[ConfigService],
-      useFactory:(ConfigService:ConfigService)=>({
-        type:"postgres",
-        host:ConfigService.get("DB_HOST"),
-        port:ConfigService.get("DB_PORT"),
-        username:ConfigService.get("USER_NAME"),
-        password:ConfigService.get("PASSWORD"),
-        database:ConfigService.get("DB_NAME"),
-        entities:[join(process.cwd(),"dist/**/*.entity.js")]
-      })
-    }),
     UserModule,
     AdminModule,
     BlogModule,
